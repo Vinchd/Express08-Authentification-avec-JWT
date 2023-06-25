@@ -18,14 +18,14 @@ app.get("/", welcome);
 const database = require("./database");
 const movieHandlers = require("./movieHandlers");
 const userHandlers = require("./userHandlers");
-const { hashPassword, verifyPassword } = require("./auth.js");
+const { hashPassword, verifyPassword, verifyToken } = require("./auth.js");
 
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.get("/api/users", userHandlers.getUsers);
 app.get("/api/users/:id", userHandlers.getUsersById);
 
-app.post("/api/movies", validateMovie, movieHandlers.postMovie);
+app.post("/api/movies", verifyToken, validateMovie, movieHandlers.postMovie);
 app.post("/api/users", validateUser, hashPassword, userHandlers.postUser);
 app.post(
   "/api/login",
