@@ -15,7 +15,6 @@ const welcome = (req, res) => {
 
 app.get("/", welcome);
 
-const database = require("./database");
 const movieHandlers = require("./movieHandlers");
 const userHandlers = require("./userHandlers");
 const { hashPassword, verifyPassword, verifyToken } = require("./auth.js");
@@ -25,13 +24,16 @@ app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.get("/api/users", userHandlers.getUsers);
 app.get("/api/users/:id", userHandlers.getUsersById);
 
-app.post("/api/movies", verifyToken, validateMovie, movieHandlers.postMovie);
 app.post("/api/users", validateUser, hashPassword, userHandlers.postUser);
 app.post(
   "/api/login",
   userHandlers.getUserByEmailWithPasswordAndPassToNext,
   verifyPassword
 );
+
+app.use(verifyToken); // authentication wall : verifyToken is activated for each route after this line
+
+app.post("/api/movies", validateMovie, movieHandlers.postMovie);
 
 app.put("/api/movies/:id", validateMovie, movieHandlers.updateMovie);
 app.put("/api/users/:id", validateUser, hashPassword, userHandlers.updateUser);
